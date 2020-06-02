@@ -16,14 +16,14 @@ This node module can be used to send slack reminders for overdue gitlab merge re
 
 ## Installation
 `
-npm install slack-gitlab-mr-reminder
+npm install @zekker6/slack-gitlab-mr-reminder
 `
 
 ## Example - running as an application
 Install the module globally
 
 `
-npm install -g slack-gitlab-mr-reminder
+npm install -g @zekker6/slack-gitlab-mr-reminder
 `
 
 Call `slack-gitlab-mr-reminder` with a suitable `yml` config, gitlab access token and slack webhook. See [example.yml](examples/config.yml) for an example of config.
