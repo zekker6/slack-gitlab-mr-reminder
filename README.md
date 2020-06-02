@@ -73,10 +73,15 @@ docker run -v config.yml:/opt/config.yml --rm zekker6/slack-gitlab-mr-reminder:{
 Supported env variables:
 |Var|Default|Description|
 |---|---|---|
-| REMINDER_CRON_SCHEDULE | '0 9 * * *'  | Cron expression to configure reminder starts |
-| REMINDER_CONFIG_PATH  | /opt/config.yml | Path to mounted config file |
-| GITLAB_ACCESS_TOKEN  | None | Gitlab access token |
-| SLACK_WEBHOOK_URL  | None | Slack webhook to send notifications |
+| REMINDER_CRON_SCHEDULE | '0 9 * * *' | Cron expression to configure reminder starts |
+| REMINDER_CONFIG_PATH | /opt/config.yml | Path to mounted config file |
+| GITLAB_ACCESS_TOKEN | None | Gitlab access token |
+| GITLAB_GROUP | None | Gitlab group name |
+| GITLAB_EXTERNAL_URL | None | Gitlab installation url |
+| GITLAB_WIP_MR_DAYS_THRESHOLD | 7 | Value in days representing threshold of notifying about stale MR |
+| GITLAB_NORMAL_MR_DAYS_THRESHOLD | 0 | Value in days representing threshold of notifying about stale MR |
+| SLACK_WEBHOOK_URL | None | Slack webhook to send notifications |
+| SLACK_CHANNEL  | None | Slack channel name |
 
 ## Options
 
