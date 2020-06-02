@@ -64,6 +64,20 @@ const reminder = new SlackGitlabMRReminder({
 reminder.remind();
 ```
 
+## Example - docker
+
+```bash
+docker run -v config.yml:/opt/config.yml --rm zekker6/slack-gitlab-mr-reminder:{TAG}
+```
+
+Supported env variables:
+|Var|Default|Description|
+|---|---|---|
+| REMINDER_CRON_SCHEDULE | '0 9 * * *'  | Cron expression to configure reminder starts |
+| REMINDER_CONFIG_PATH  | /opt/config.yml | Path to mounted config file |
+| GITLAB_ACCESS_TOKEN  | None | Gitlab access token |
+| SLACK_WEBHOOK_URL  | None | Slack webhook to send notifications |
+
 ## Options
 
 - `gitlab.group` - The name of the group to watch for merge requests - Required
@@ -75,6 +89,8 @@ reminder.remind();
 
 ## Change Log
 
+### 1.3.1
+- Add docker support
 ### 1.3.0
 - Overdue can be configured for both normal and WIP merge requests.
 ### 1.2.1
