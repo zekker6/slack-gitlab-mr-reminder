@@ -16,3 +16,4 @@ jobs:
         repository: zekker6/slack-gitlab-mr-reminder
         tag_with_ref: true
         tag_with_sha: true
+        dockerfile: docker/Dockerfile
