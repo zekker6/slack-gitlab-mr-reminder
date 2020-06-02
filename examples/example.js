@@ -3,7 +3,7 @@ var SlackGitlabMRReminder = require('slack-gitlab-mr-reminder');
 const reminder = new SlackGitlabMRReminder({
   mr: {
     wip_mr_days_threshold: 7,
-    wip_mr_days_threshold: 30,
+    normal_mr_days_threshold: 0,
   },
   slack: {
     webhook_url: 'https://hooks.slack.com/services/...',
@@ -11,7 +11,8 @@ const reminder = new SlackGitlabMRReminder({
   },
   gitlab: {
     access_token: '...',
-    group: 'mygroup'
+    group: 'mygroup',
+    external_url: 'https://gitlab.company.com/'
   }
 });
 

@@ -4,7 +4,17 @@ var fs = require('fs');
 var SlackGitlabMRReminder = require('./slack-gitlab-mr-reminder');
 
 const optionsFile = process.argv[2];
-let options = yaml.safeLoad(fs.readFileSync(optionsFile, 'utf-8'));
+
+let options = {
+    mr: {},
+    slack: {},
+    github: {}
+};
+
+if (fs.existsSync(optionsFile)) {
+    options = yaml.safeLoad(fs.readFileSync(optionsFile, 'utf-8'));
+}
+
 options.slack.webhook_url = options.slack.webhook_url || process.env.SLACK_WEBHOOK_URL;
 options.slack.channel = options.slack.channel || process.env.SLACK_CHANNEL;
 

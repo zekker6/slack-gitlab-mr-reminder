@@ -2,8 +2,8 @@
 
 # slack-gitlab-mr-reminder
 
-[![npm version](https://badge.fury.io/js/slack-gitlab-mr-reminder.svg)](https://badge.fury.io/js/slack-gitlab-mr-reminder) 
-[![Build Status](https://travis-ci.org/inspectorioinc/slack-gitlab-mr-reminder.svg?branch=master)](https://travis-ci.org/inspectorioinc/slack-gitlab-mr-reminder)
+[![Test Status](https://github.com/zekker6/slack-gitlab-mr-reminder/workflows/Testing/badge.svg)](https://github.com/zekker6/slack-gitlab-mr-reminder/workflows/Testing/badge.svg)
+[![Build Status](https://github.com/zekker6/slack-gitlab-mr-reminder/workflows/Build%20docker%20image/badge.svg)](https://github.com/zekker6/slack-gitlab-mr-reminder/workflows/Build%20docker%20image/badge.svg)
 
 This node module can be used to send slack reminders for overdue gitlab merge requests. The criteria for this can be configured, but default is that:
 - WIP merge requests not updated for longer than 7 day.
@@ -67,13 +67,17 @@ reminder.remind();
 ## Example - docker
 
 ```bash
+# To configure via config file
 docker run -v config.yml:/opt/config.yml --rm zekker6/slack-gitlab-mr-reminder:{TAG}
+
+# Configuration via env parameters
+docker run -e ... --rm zekker6/slack-gitlab-mr-reminder:{TAG}
 ```
 
 Supported env variables:
 |Var|Default|Description|
 |---|---|---|
-| REMINDER_CRON_SCHEDULE | '0 9 * * *' | Cron expression to configure reminder starts |
+| REMINDER_CRON_SCHEDULE | '* * * * *' | Cron expression to configure reminder starts |
 | REMINDER_CONFIG_PATH | /opt/config.yml | Path to mounted config file |
 | GITLAB_ACCESS_TOKEN | None | Gitlab access token |
 | GITLAB_GROUP | None | Gitlab group name |
@@ -92,14 +96,5 @@ Supported env variables:
 - `slack.name` - Name of the slack poster - Defaults to `GitLab Reminder`
 - `slack.message` - Message to send at the top of the slack message - Defaults to `Merge requests are overdue:`
 
-## Change Log
-
-### 1.3.1
-- Add docker support
-### 1.3.0
-- Overdue can be configured for both normal and WIP merge requests.
-### 1.2.1
-- Added gitlab pagination support
-### 1.2.0
-- Fixed bug which was causing `gitlab.external_url` option to not work correctly
-- Added binary to package
+It is possible to run app by using either config file or env variables.
+Browse examples in examples folder: [here](examples/)

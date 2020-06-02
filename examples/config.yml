@@ -1,8 +1,14 @@
 mr:
   normal_mr_days_threshold: 3
+  wip_mr_days_threshold: 7
+
 gitlab:
   group: mygroup
+  access_token: '...'
+  external_url: 'https://gitlab.company.com/'
+
 slack: 
   channel: merge-requests
   name: Gitlab Reminder
   message: Get to work on those merge requests!
+  webhook_url: 'https://hooks.slack.com/services/...'
