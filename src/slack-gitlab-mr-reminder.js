@@ -43,6 +43,9 @@ class SlackGitlabMRReminder {
   async remind() {
     let merge_requests = await this.gitlab.getGroupMergeRequests();
     merge_requests = merge_requests.filter((mr) => {
+      if (!mr || !mr.title) {
+        return;
+      }
       const threshold = isWipMr(mr.title) ? this.options.mr.wip_mr_days_threshold : this.options.mr.normal_mr_days_threshold;
       return moment().diff(moment(mr.updated_at), 'days') > threshold;
     });

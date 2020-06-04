@@ -93,7 +93,11 @@ class GitLab
 
   async getGroupMergeRequests() {
     const projects = await this.getProjects();
-    const merge_requests = await Promise.all(projects.map((project) => this.getProjectMergeRequests(project.id)));    
+    const merge_requests = await Promise.all(
+      projects
+        .filter((project) => project.id !== undefined)
+        .map((project) => this.getProjectMergeRequests(project.id))
+    );
     return [].concat(...merge_requests);
   }
 }
