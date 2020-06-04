@@ -5,6 +5,7 @@
 [![npm version](https://badge.fury.io/js/%40zekker6%2Fslack-gitlab-mr-reminder.svg)](https://badge.fury.io/js/%40zekker6%2Fslack-gitlab-mr-reminder)
 [![Test Status](https://github.com/zekker6/slack-gitlab-mr-reminder/workflows/Testing/badge.svg)](https://github.com/zekker6/slack-gitlab-mr-reminder/workflows/Testing/badge.svg)
 [![Build Status](https://github.com/zekker6/slack-gitlab-mr-reminder/workflows/Build%20docker%20image/badge.svg)](https://github.com/zekker6/slack-gitlab-mr-reminder/workflows/Build%20docker%20image/badge.svg)
+![Docker Image Version](https://img.shields.io/docker/v/zekker6/slack-gitlab-mr-reminder?sort=semver)
 
 This node module can be used to send slack reminders for overdue gitlab merge requests. The criteria for this can be configured, but default is that:
 - WIP merge requests not updated for longer than 7 day.
