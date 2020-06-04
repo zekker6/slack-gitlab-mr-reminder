@@ -1,6 +1,9 @@
 name: Build docker image
 
 on:
+  push:
+    branches:
+      - master
   create:
     tags:
       - v*

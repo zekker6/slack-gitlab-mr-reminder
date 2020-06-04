@@ -67,12 +67,19 @@ reminder.remind();
 
 ## Example - docker
 
+Launch with cron
 ```bash
 # To configure via config file
 docker run -v config.yml:/opt/config.yml --rm zekker6/slack-gitlab-mr-reminder:{TAG}
 
 # Configuration via env parameters
 docker run -e ... --rm zekker6/slack-gitlab-mr-reminder:{TAG}
+```
+
+One-time start
+```bash
+
+docker run --rm zekker6/slack-gitlab-mr-reminder:{TAG} remind
 ```
 
 Supported env variables:
