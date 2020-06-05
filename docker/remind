@@ -1,1 +1,1 @@
-node /opt/app/src/remind.js
+node /opt/app/src/remind.js "$@"

@@ -8,7 +8,7 @@ const optionsFile = process.argv[2];
 let options = {
     mr: {},
     slack: {},
-    github: {}
+    gitlab: {}
 };
 
 if (fs.existsSync(optionsFile)) {
