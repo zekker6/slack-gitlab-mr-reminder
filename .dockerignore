@@ -6,3 +6,4 @@ LICENSE
 screenshot.png
 examples/
 .github
+node_modules/
