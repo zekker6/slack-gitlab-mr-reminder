@@ -25,8 +25,11 @@ options.gitlab.external_url = options.gitlab.external_url|| process.env['GITLAB_
 options.mr.normal_mr_days_threshold = options.gitlab.normal_mr_days_threshold || process.env['GITLAB_NORMAL_MR_DAYS_THRESHOLD'];
 options.mr.wip_mr_days_threshold = options.gitlab.wip_mr_days_threshold || process.env['GITLAB_WIP_MR_DAYS_THRESHOLD'];
 
-console.log('Parsed options: ' + JSON.stringify(options));
-console.log('Env options: ' + JSON.stringify(process.env));
+
+if (process.env['REMINDER_DEBUG']) {
+    console.log('Parsed options: ' + JSON.stringify(options));
+    console.log('Env options: ' + JSON.stringify(process.env));
+}
 
 const reminder = new SlackGitlabMRReminder(options);
 
