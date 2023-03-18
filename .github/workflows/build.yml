@@ -13,7 +13,7 @@ permissions:
   packages: write
 
 jobs:
-  container-job:
+  build:
     runs-on: ubuntu-latest
 
     steps:
