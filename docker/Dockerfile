@@ -1,4 +1,4 @@
-FROM node:19-slim
+FROM node:20-slim
 
 RUN apt-get update && apt-get -y install cron
 
