@@ -14,6 +14,7 @@ const mock_merge_requests = [
       name: 'person'
     },
     web_url: 'https://gitlab.com/merge/1',
+    draft: false,
     updated_at: (new Date()).valueOf()
   },
   {
@@ -24,6 +25,7 @@ const mock_merge_requests = [
       name: 'person'
     },
     web_url: 'https://gitlab.com/merge/2',
+    draft: false,
     updated_at: (new Date()).valueOf()
   }
 ]

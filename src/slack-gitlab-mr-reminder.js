@@ -1,7 +1,8 @@
 var moment = require('moment');
 var { IncomingWebhook } = require('@slack/webhook');
 var GitLab = require('./gitlab');
-const { isWipMr } = require('./is-wip-mr');
+const { isDraftMr } = require('./is-draft-mr');
+const { parseDuration } = require('./parse-duration');
 
 const SLACK_LOGO_URL = 'https://about.gitlab.com/images/press/logo/logo.png';
 
@@ -13,8 +14,17 @@ class SlackGitlabMRReminder {
     this.options.gitlab.external_url = this.options.gitlab.external_url || 'https://gitlab.com';
     this.options.slack.name = this.options.slack.name || 'GitLab Reminder';
     this.options.slack.message = this.options.slack.message || 'Merge requests are overdue:';
-    this.options.mr.normal_mr_days_threshold = this.options.mr.normal_mr_days_threshold || 0;
-    this.options.mr.wip_mr_days_threshold = this.options.mr.wip_mr_days_threshold || 7;
+
+    if (this.options.mr.normal_mr_threshold && this.options.mr.normal_mr_days_threshold) {
+      throw new Error('Cannot set both normal_mr_threshold and normal_mr_days_threshold. Use normal_mr_threshold for duration strings (e.g. "2h", "30m") or normal_mr_days_threshold for days.');
+    }
+    if (this.options.mr.wip_mr_threshold && this.options.mr.wip_mr_days_threshold) {
+      throw new Error('Cannot set both wip_mr_threshold and wip_mr_days_threshold. Use wip_mr_threshold for duration strings (e.g. "2h", "30m") or wip_mr_days_threshold for days.');
+    }
+
+    this.normalThresholdMs = parseDuration(this.options.mr.normal_mr_threshold || (this.options.mr.normal_mr_days_threshold || 0));
+    this.wipThresholdMs = parseDuration(this.options.mr.wip_mr_threshold || (this.options.mr.wip_mr_days_threshold || 7));
+
     this.gitlab = new GitLab(this.options.gitlab.external_url, this.options.gitlab.access_token, this.options.gitlab.group);
     this.webhook = new IncomingWebhook(this.options.slack.webhook_url, {
       username: this.options.slack.name,
@@ -46,8 +56,8 @@ class SlackGitlabMRReminder {
       if (!mr || !mr.title) {
         return;
       }
-      const threshold = isWipMr(mr.title) ? this.options.mr.wip_mr_days_threshold : this.options.mr.normal_mr_days_threshold;
-      return moment().diff(moment(mr.updated_at), 'days') > threshold;
+      const thresholdMs = isDraftMr(mr) ? this.wipThresholdMs : this.normalThresholdMs;
+      return moment().diff(moment(mr.updated_at)) > thresholdMs;
     });
     if(merge_requests.length === 0) {
       return 'No reminders to send'

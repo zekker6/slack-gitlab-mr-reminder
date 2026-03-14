@@ -8,9 +8,11 @@
 
 [Docker image](https://github.com/zekker6/slack-gitlab-mr-reminder/pkgs/container/slack-gitlab-mr-reminder)
 
-This node module can be used to send slack reminders for overdue gitlab merge requests. The criteria for this can be configured, but default is that:
-- WIP merge requests not updated for longer than 7 day.
-- Normal merge requests not updated for longer than 0 day (24 hours).
+This node module can be used to send slack reminders for overdue gitlab merge requests. Both WIP and Draft merge requests are detected (via title prefix or GitLab API `draft` field). The criteria for this can be configured, but default is that:
+- WIP/Draft merge requests not updated for longer than 7 days.
+- Normal merge requests not updated for longer than 0 days (24 hours).
+
+Thresholds can be configured in days (legacy) or as duration strings (e.g. `2h`, `30m`, `1d6h30m`) for sub-day precision.
 
 <img src="screenshot.png" width="500" height="auto"/>
 
@@ -49,10 +51,27 @@ You may use the functionality as a module:
 ```js
 var SlackGitlabMRReminder = require('slack-gitlab-mr-reminder');
 
+// Using day-based thresholds (legacy)
 const reminder = new SlackGitlabMRReminder({
   mr: {
     wip_mr_days_threshold: 7,
     normal_mr_days_threshold: Infinity,
+  },
+  slack: {
+    webhook_url: 'https://hooks.slack.com/services/...',
+    channel: 'merge-requests',
+  },
+  gitlab: {
+    access_token: '...',
+    group: 'mygroup'
+  }
+});
+
+// Using duration-based thresholds (supports sub-day precision)
+const reminder2 = new SlackGitlabMRReminder({
+  mr: {
+    wip_mr_threshold: '1d12h',
+    normal_mr_threshold: '2h',
   },
   slack: {
     webhook_url: 'https://hooks.slack.com/services/...',
@@ -92,8 +111,10 @@ Supported env variables:
 | GITLAB_ACCESS_TOKEN | None | Gitlab access token |
 | GITLAB_GROUP | None | Gitlab group name |
 | GITLAB_EXTERNAL_URL | None | Gitlab installation url |
-| GITLAB_WIP_MR_DAYS_THRESHOLD | 7 | Value in days representing threshold of notifying about stale MR |
+| GITLAB_WIP_MR_DAYS_THRESHOLD | 7 | Value in days representing threshold of notifying about stale WIP/Draft MR |
 | GITLAB_NORMAL_MR_DAYS_THRESHOLD | 0 | Value in days representing threshold of notifying about stale MR |
+| GITLAB_WIP_MR_THRESHOLD | None | Duration string (e.g. `2h`, `30m`, `1d6h30m`) for WIP/Draft MR threshold. Cannot be used together with `GITLAB_WIP_MR_DAYS_THRESHOLD` |
+| GITLAB_NORMAL_MR_THRESHOLD | None | Duration string (e.g. `2h`, `30m`, `1d6h30m`) for normal MR threshold. Cannot be used together with `GITLAB_NORMAL_MR_DAYS_THRESHOLD` |
 | SLACK_WEBHOOK_URL | None | Slack webhook to send notifications |
 | SLACK_CHANNEL  | None | Slack channel name |
 
@@ -105,6 +126,11 @@ Supported env variables:
 - `slack.channel` - The slack channel to post to - Required
 - `slack.name` - Name of the slack poster - Defaults to `GitLab Reminder`
 - `slack.message` - Message to send at the top of the slack message - Defaults to `Merge requests are overdue:`
+
+- `mr.normal_mr_days_threshold` - Number of days before a normal MR is considered overdue - Defaults to `0`
+- `mr.wip_mr_days_threshold` - Number of days before a WIP/Draft MR is considered overdue - Defaults to `7`
+- `mr.normal_mr_threshold` - Duration string (e.g. `2h`, `30m`, `1d6h30m`) before a normal MR is considered overdue. Cannot be used together with `normal_mr_days_threshold`
+- `mr.wip_mr_threshold` - Duration string (e.g. `2h`, `30m`, `1d6h30m`) before a WIP/Draft MR is considered overdue. Cannot be used together with `wip_mr_days_threshold`
 
 It is possible to run app by using either config file or env variables.
 Browse examples in examples folder: [here](examples/)
