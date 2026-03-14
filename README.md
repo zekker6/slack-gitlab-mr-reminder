@@ -115,6 +115,7 @@ Supported env variables:
 | GITLAB_NORMAL_MR_DAYS_THRESHOLD | 0 | Value in days representing threshold of notifying about stale MR |
 | GITLAB_WIP_MR_THRESHOLD | None | Duration string (e.g. `2h`, `30m`, `1d6h30m`) for WIP/Draft MR threshold. Cannot be used together with `GITLAB_WIP_MR_DAYS_THRESHOLD` |
 | GITLAB_NORMAL_MR_THRESHOLD | None | Duration string (e.g. `2h`, `30m`, `1d6h30m`) for normal MR threshold. Cannot be used together with `GITLAB_NORMAL_MR_DAYS_THRESHOLD` |
+| GITLAB_MR_DATE_FIELD | updated_at | Which MR date field to compare against. Either `updated_at` or `created_at` |
 | SLACK_WEBHOOK_URL | None | Slack webhook to send notifications |
 | SLACK_CHANNEL  | None | Slack channel name |
 
@@ -131,6 +132,7 @@ Supported env variables:
 - `mr.wip_mr_days_threshold` - Number of days before a WIP/Draft MR is considered overdue - Defaults to `7`
 - `mr.normal_mr_threshold` - Duration string (e.g. `2h`, `30m`, `1d6h30m`) before a normal MR is considered overdue. Cannot be used together with `normal_mr_days_threshold`
 - `mr.wip_mr_threshold` - Duration string (e.g. `2h`, `30m`, `1d6h30m`) before a WIP/Draft MR is considered overdue. Cannot be used together with `wip_mr_days_threshold`
+- `mr.mr_date_field` - Which MR date field to compare against: `updated_at` (default) or `created_at`
 
 It is possible to run app by using either config file or env variables.
 Browse examples in examples folder: [here](examples/)

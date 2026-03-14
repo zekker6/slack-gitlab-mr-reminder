@@ -443,3 +443,118 @@ test('throws when both wip_mr_threshold and wip_mr_days_threshold are set', () =
     }
   })).toThrow('Cannot set both wip_mr_threshold and wip_mr_days_threshold');
 });
+
+test('mr_date_field created_at uses creation time instead of updated_at', async () => {
+  var reminder = new SlackGitlabMRReminder({
+    slack: { webhook_url: 'hook', channel: 'merge-requests' },
+    gitlab: { access_token: 'token', group: 'mygroup' },
+    mr: {
+      normal_mr_threshold: '1d',
+      wip_mr_threshold: '3d',
+      mr_date_field: 'created_at'
+    }
+  });
+  const mrs = [
+    {
+      id: 1,
+      title: 'Recently created MR',
+      description: 'Created 12h ago, updated just now',
+      author: { name: 'person' },
+      web_url: 'https://gitlab.com/merge/1',
+      draft: false,
+      created_at: moment().subtract(12, 'hours').toDate(),
+      updated_at: moment().subtract(1, 'minutes').toDate()
+    },
+    {
+      id: 2,
+      title: 'Old created MR',
+      description: 'Created 3 days ago, updated just now',
+      author: { name: 'person' },
+      web_url: 'https://gitlab.com/merge/2',
+      draft: false,
+      created_at: moment().subtract(3, 'days').toDate(),
+      updated_at: moment().subtract(1, 'minutes').toDate()
+    },
+    {
+      id: 3,
+      title: 'Draft: Recent draft',
+      description: 'Created 2 days ago',
+      author: { name: 'person' },
+      web_url: 'https://gitlab.com/merge/3',
+      draft: true,
+      created_at: moment().subtract(2, 'days').toDate(),
+      updated_at: moment().subtract(1, 'minutes').toDate()
+    },
+    {
+      id: 4,
+      title: 'Draft: Old draft',
+      description: 'Created 5 days ago',
+      author: { name: 'person' },
+      web_url: 'https://gitlab.com/merge/4',
+      draft: true,
+      created_at: moment().subtract(5, 'days').toDate(),
+      updated_at: moment().subtract(1, 'minutes').toDate()
+    }
+  ];
+  reminder.gitlab.getGroupMergeRequests = jest.fn(() => Promise.resolve(mrs));
+  const result = await reminder.remind();
+  expect(result).toBe('Reminder sent');
+  // MR1: created 12h ago < 1d threshold → excluded
+  // MR2: created 3d ago > 1d threshold → included
+  // MR3: draft, created 2d ago < 3d threshold → excluded
+  // MR4: draft, created 5d ago > 3d threshold → included
+  expect(reminder.webhook.send.mock.calls[0][0]).toEqual({
+    attachments: [
+      {
+        author_name: 'person',
+        color: '#FC6D26',
+        text: 'Created 3 days ago, updated just now',
+        title: 'Old created MR',
+        title_link: 'https://gitlab.com/merge/2'
+      },
+      {
+        author_name: 'person',
+        color: '#FC6D26',
+        text: 'Created 5 days ago',
+        title: 'Draft: Old draft',
+        title_link: 'https://gitlab.com/merge/4'
+      }
+    ],
+    text: 'Merge requests are overdue:'
+  });
+});
+
+test('mr_date_field defaults to updated_at', async () => {
+  var reminder = new SlackGitlabMRReminder({
+    slack: { webhook_url: 'hook', channel: 'merge-requests' },
+    gitlab: { access_token: 'token', group: 'mygroup' },
+    mr: {
+      normal_mr_threshold: '1d'
+    }
+  });
+  const mrs = [
+    {
+      id: 1,
+      title: 'MR with old created but recent update',
+      description: 'Should be excluded because updated_at is recent',
+      author: { name: 'person' },
+      web_url: 'https://gitlab.com/merge/1',
+      draft: false,
+      created_at: moment().subtract(10, 'days').toDate(),
+      updated_at: moment().subtract(1, 'hours').toDate()
+    }
+  ];
+  reminder.gitlab.getGroupMergeRequests = jest.fn(() => Promise.resolve(mrs));
+  const result = await reminder.remind();
+  expect(result).toBe('No reminders to send');
+});
+
+test('throws on invalid mr_date_field', () => {
+  expect(() => new SlackGitlabMRReminder({
+    slack: { webhook_url: 'hook', channel: 'merge-requests' },
+    gitlab: { access_token: 'token', group: 'mygroup' },
+    mr: {
+      mr_date_field: 'invalid_field'
+    }
+  })).toThrow('Invalid mr_date_field: "invalid_field"');
+});

@@ -26,6 +26,7 @@ options.mr.normal_mr_days_threshold = options.mr.normal_mr_days_threshold || pro
 options.mr.wip_mr_days_threshold = options.mr.wip_mr_days_threshold || process.env['GITLAB_WIP_MR_DAYS_THRESHOLD'];
 options.mr.normal_mr_threshold = options.mr.normal_mr_threshold || process.env['GITLAB_NORMAL_MR_THRESHOLD'];
 options.mr.wip_mr_threshold = options.mr.wip_mr_threshold || process.env['GITLAB_WIP_MR_THRESHOLD'];
+options.mr.mr_date_field = options.mr.mr_date_field || process.env['GITLAB_MR_DATE_FIELD'];
 
 
 if (process.env['REMINDER_DEBUG']) {

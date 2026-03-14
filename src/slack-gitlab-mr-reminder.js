@@ -25,6 +25,12 @@ class SlackGitlabMRReminder {
     this.normalThresholdMs = parseDuration(this.options.mr.normal_mr_threshold || (this.options.mr.normal_mr_days_threshold || 0));
     this.wipThresholdMs = parseDuration(this.options.mr.wip_mr_threshold || (this.options.mr.wip_mr_days_threshold || 7));
 
+    const dateField = this.options.mr.mr_date_field || 'updated_at';
+    if (dateField !== 'updated_at' && dateField !== 'created_at') {
+      throw new Error(`Invalid mr_date_field: "${dateField}". Must be "updated_at" or "created_at".`);
+    }
+    this.mrDateField = dateField;
+
     this.gitlab = new GitLab(this.options.gitlab.external_url, this.options.gitlab.access_token, this.options.gitlab.group);
     this.webhook = new IncomingWebhook(this.options.slack.webhook_url, {
       username: this.options.slack.name,
@@ -57,7 +63,7 @@ class SlackGitlabMRReminder {
         return;
       }
       const thresholdMs = isDraftMr(mr) ? this.wipThresholdMs : this.normalThresholdMs;
-      return moment().diff(moment(mr.updated_at)) > thresholdMs;
+      return moment().diff(moment(mr[this.mrDateField])) > thresholdMs;
     });
     if(merge_requests.length === 0) {
       return 'No reminders to send'
