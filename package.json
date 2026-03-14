@@ -28,11 +28,11 @@
   },
   "homepage": "https://github.com/zekker6/slack-gitlab-mr-reminder#readme",
   "dependencies": {
-    "@slack/client": "^5.0.0",
+    "@slack/client": "^5.0.2",
     "js-yaml": "^4.0.0",
     "moment": "^2.18.1",
     "request": "^2.81.0",
-    "request-promise-native": "^1.0.4"
+    "request-promise-native": "^0.0.0"
   },
   "devDependencies": {
     "jest": "30.3.0"

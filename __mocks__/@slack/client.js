@@ -1,4 +1,4 @@
-const client = jest.genMockFromModule('@slack/client');
+const client = jest.createMockFromModule('@slack/client');
 
 client.IncomingWebhook.prototype.send = (message, callback) => {
   process.nextTick(() => {
