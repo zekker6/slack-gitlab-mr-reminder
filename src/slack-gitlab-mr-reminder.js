@@ -1,5 +1,5 @@
 var moment = require('moment');
-var slack = require('@slack/client');
+var { IncomingWebhook } = require('@slack/webhook');
 var GitLab = require('./gitlab');
 const { isWipMr } = require('./is-wip-mr');
 
@@ -16,9 +16,9 @@ class SlackGitlabMRReminder {
     this.options.mr.normal_mr_days_threshold = this.options.mr.normal_mr_days_threshold || 0;
     this.options.mr.wip_mr_days_threshold = this.options.mr.wip_mr_days_threshold || 7;
     this.gitlab = new GitLab(this.options.gitlab.external_url, this.options.gitlab.access_token, this.options.gitlab.group);
-    this.webhook = new slack.IncomingWebhook(this.options.slack.webhook_url, {
+    this.webhook = new IncomingWebhook(this.options.slack.webhook_url, {
       username: this.options.slack.name,
-      iconUrl: SLACK_LOGO_URL,
+      icon_url: SLACK_LOGO_URL,
       channel: this.options.slack.channel
     });
   }
@@ -53,11 +53,8 @@ class SlackGitlabMRReminder {
       return 'No reminders to send'
     }
     const message = this.createSlackMessage(merge_requests);
-    return new Promise((resolve, reject) => {
-      this.webhook.send(message, (err, res) => {
-        err ? reject(err) : resolve('Reminder sent');
-      });
-    });
+    await this.webhook.send(message);
+    return 'Reminder sent';
   }
 }
 
