@@ -12,7 +12,7 @@ let options = {
 };
 
 if (fs.existsSync(optionsFile)) {
-    options = yaml.safeLoad(fs.readFileSync(optionsFile, 'utf-8'));
+    options = yaml.load(fs.readFileSync(optionsFile, 'utf-8'));
 }
 
 options.slack.webhook_url = options.slack.webhook_url || process.env['SLACK_WEBHOOK_URL'];
